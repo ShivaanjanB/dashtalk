@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Re-downloadable data and the warehouse built from it (dashtalk-fetch, dashtalk-build)
+data/
+# Audit logs written by the server at run time
+logs/

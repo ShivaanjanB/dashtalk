@@ -1,0 +1,21 @@
+# Who can see what. The server takes the user from how it was started (never from the model),
+# so a prompt can't change these.
+users:
+  cfo:
+    name: Chief Financial Officer
+    dashboards: [sovereign_macro, corporate_credit, revenue_by_product]
+  analyst_emea:
+    name: Analyst, EMEA sales
+    dashboards: [sovereign_macro, corporate_credit, revenue_by_product]
+    row_filters:
+      revenue_by_product:
+        region: [EMEA, UK & Ireland]
+  analyst_apac:
+    name: Analyst, APAC sales
+    dashboards: [sovereign_macro, revenue_by_product]
+    row_filters:
+      revenue_by_product:
+        region: [APAC]
+  contractor:
+    name: External contractor
+    dashboards: [sovereign_macro]

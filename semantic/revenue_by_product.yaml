@@ -1,0 +1,74 @@
+name: revenue_by_product
+title: Revenue by product
+description: Monthly sales of five data products across four regions, Jan 2024 to Dec 2025. Synthetic data made for this demo.
+table: revenue_by_product
+grain: one row per month, region and product
+source: Synthetic, generated with a fixed seed by dashtalk-fetch
+row_level_security: region
+caveats:
+  - This data is synthetic. It exists to show row-level permissions, not to describe any real company.
+
+dimensions:
+  region:
+    column: region
+    match: exact
+    description: "Sales region: UK & Ireland, EMEA, Americas or APAC."
+    synonyms: [territory, geography, market]
+    aliases:
+      uk: UK & Ireland
+      uki: UK & Ireland
+      uk and ireland: UK & Ireland
+      europe: EMEA
+      north america: Americas
+      us: Americas
+      asia: APAC
+      asia pacific: APAC
+  product:
+    column: product
+    match: contains
+    description: "Product: Ratings Feed, Credit Analytics, Sovereign Monitor, ESG Scores or Learning Licences."
+    synonyms: [product line, offering]
+  year:
+    column: year
+    match: exact
+    type: int
+    description: Calendar year, 2024 or 2025.
+  quarter:
+    column: quarter
+    match: exact
+    description: Calendar quarter written as YYYY-Qn, for example 2025-Q2.
+  month:
+    column: month
+    match: exact
+    description: Month written as YYYY-MM, for example 2025-03.
+
+metrics:
+  revenue:
+    label: Revenue
+    expr: sum(revenue_usd)
+    unit: usd
+    description: Net revenue after discounts.
+    synonyms: [sales, bookings, turnover, income]
+  units:
+    label: Units sold
+    expr: sum(units)
+    unit: units
+    description: Licences or seats sold.
+    synonyms: [volume, units sold, licences sold, seats]
+  gross_profit:
+    label: Gross profit
+    expr: sum(revenue_usd) - sum(cost_usd)
+    unit: usd
+    description: Revenue minus cost of sales.
+    synonyms: [gross income]
+  gross_margin:
+    label: Gross margin
+    expr: 100 * (sum(revenue_usd) - sum(cost_usd)) / nullif(sum(revenue_usd), 0)
+    unit: percent
+    description: Gross profit as a percentage of revenue.
+    synonyms: [margin, gm, gross margin percentage]
+
+examples:
+  - What was ESG Scores revenue in EMEA in 2025-Q2?
+  - Which product sold the most units in 2024?
+  - What was gross margin by region in 2025?

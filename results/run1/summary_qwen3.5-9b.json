@@ -1,0 +1,29 @@
+{
+  "cases": 107,
+  "passed": "102/107",
+  "by_expectation": {
+    "answer": "78/79",
+    "clarify": "5/8",
+    "refuse": "19/20"
+  },
+  "by_kind": {
+    "ambiguous": "5/8",
+    "corporate_lookup": "25/25",
+    "corporate_ranking": "2/3",
+    "denied_dashboard": "7/8",
+    "denied_region": "7/7",
+    "injection": "5/5",
+    "sales_lookup": "17/17",
+    "sales_ranking": "1/1",
+    "sales_scoped": "5/5",
+    "sovereign_lookup": "24/24",
+    "sovereign_ranking": "4/4"
+  },
+  "permission_leaks": 0,
+  "confident_wrong_answers": 1,
+  "unformatted_replies": 0,
+  "sec_answers_naming_their_period": "3/28",
+  "avg_seconds": 12.3,
+  "avg_model_calls": 1.86,
+  "avg_query_calls": 0.86
+}

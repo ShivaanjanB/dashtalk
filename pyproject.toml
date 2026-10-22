@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dashtalk"
+version = "0.1.0"
+description = "Ask dashboards questions in plain English: an MCP server over a semantic layer, with permissions and an eval."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "duckdb>=1.1",
+    "numpy>=1.26",
+    # pandas 3.0's DLLs are blocked by Windows application control on this machine; 2.x loads.
+    "pandas>=2.2,<3",
+    "pyyaml>=6",
+    # MCP Python SDK 2.x (MCPServer / Client); 1.x used a different API (FastMCP).
+    "mcp>=2.3,<3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+dashtalk-fetch = "dashtalk.fetch:main"
+dashtalk-build = "dashtalk.warehouse:main"
+dashtalk-server = "dashtalk.server:main"
+dashtalk-ask = "dashtalk.agent:main"
+dashtalk-eval = "dashtalk.evals:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110

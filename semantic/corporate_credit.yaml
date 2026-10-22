@@ -1,0 +1,95 @@
+name: corporate_credit
+title: Corporate credit metrics
+description: Annual financials and credit ratios for about 1,600 US-listed companies with revenue of at least USD 1bn, 2021-2024, from SEC XBRL filings.
+table: corporate_credit
+grain: one row per company and year
+source: SEC XBRL frames API (data.sec.gov), fetched 22 Oct 2026
+caveats:
+  - Each year is the company's own fiscal year that SEC files under that calendar year; every figure names its year end.
+  - Income figures more than 10 times revenue are filing scale errors and are left blank (listed in corporate_exclusions).
+  - US filers only, and only companies with at least USD 1bn of revenue in that year.
+  - Many filers moved interest expense to a new tag in 2024, so 2024 interest expense and interest cover are missing for more companies.
+period:
+  end: period_end
+  label: fiscal year ended {end}
+  mixed: each company's fiscal year filed under {year}
+  note: >-
+    SEC files each company's own fiscal year under the nearest calendar year, so "2022" for Walmart is its
+    fiscal year ended 31 Jan 2023. Every figure says which year it covers; keep that in the answer.
+
+dimensions:
+  company:
+    column: company
+    match: contains
+    description: Company name as filed with the SEC; part of the name is enough (for example "microsoft").
+    synonyms: [firm, issuer, corporation, name]
+  year:
+    column: year
+    match: exact
+    type: int
+    description: Year SEC files the figure under, 2021-2024; each company's own fiscal year nearest that calendar year.
+  hq:
+    column: hq_location
+    match: exact
+    description: Headquarters location code from the filing, for example "US-CA" or "US-NY".
+    synonyms: [headquarters, location, state]
+
+metrics:
+  revenue:
+    label: Revenue
+    expr: sum(revenue_usd)
+    unit: usd
+    description: Total revenue for the year.
+    synonyms: [sales, turnover, top line, revenues]
+  operating_income:
+    label: Operating income
+    expr: sum(operating_income_usd)
+    unit: usd
+    description: Operating income (loss), used here as a proxy for EBIT.
+    synonyms: [ebit, operating profit]
+  net_income:
+    label: Net income
+    expr: sum(net_income_usd)
+    unit: usd
+    description: Net income (loss) for the year.
+    synonyms: [profit, earnings, bottom line, net profit]
+  interest_expense:
+    label: Interest expense
+    expr: sum(interest_expense_usd)
+    unit: usd
+    description: Interest expense for the year.
+    synonyms: [interest cost, interest paid]
+  interest_cover:
+    label: Interest cover
+    expr: sum(operating_income_usd) / nullif(sum(interest_expense_usd), 0)
+    unit: times
+    description: Operating income divided by interest expense; how many times earnings cover interest.
+    synonyms: [interest coverage, times interest earned, ebit interest cover, interest coverage ratio]
+    caveats: Uses operating income as an EBIT proxy. Missing where interest expense isn't tagged (more often in 2024).
+  debt_to_assets:
+    label: Long-term debt to assets
+    expr: sum(long_term_debt_usd) / nullif(sum(total_assets_usd), 0)
+    unit: ratio
+    description: Long-term debt divided by total assets.
+    synonyms: [leverage, debt ratio, debt to assets]
+    period:
+      end: balance_sheet_date
+      label: balance sheet at {end}
+      mixed: balance sheets nearest 31 Dec {year}
+  operating_margin:
+    label: Operating margin
+    expr: 100 * sum(operating_income_usd) / nullif(sum(revenue_usd), 0)
+    unit: percent
+    description: Operating income as a percentage of revenue.
+    synonyms: [ebit margin, operating profit margin]
+  net_margin:
+    label: Net margin
+    expr: 100 * sum(net_income_usd) / nullif(sum(revenue_usd), 0)
+    unit: percent
+    description: Net income as a percentage of revenue.
+    synonyms: [profit margin, net profit margin]
+
+examples:
+  - What was Microsoft's revenue in 2023?
+  - Which company had the highest net income in 2024?
+  - What was Boeing's interest cover in 2022?

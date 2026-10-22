@@ -1,0 +1,99 @@
+name: sovereign_macro
+title: Sovereign macro monitor
+description: Annual macroeconomic indicators for 217 countries, 2015-2024, from the World Bank.
+table: sovereign_macro
+grain: one row per country and year
+source: World Bank World Development Indicators (api.worldbank.org), fetched 22 Oct 2026
+caveats:
+  - Averages across several countries (for example by region) are simple averages, not weighted by GDP.
+  - The latest years can be revised by the World Bank.
+
+dimensions:
+  country:
+    column: country
+    match: name_or_code
+    code_column: iso3
+    description: Country name as the World Bank spells it; ISO3 codes (GBR, USA) also work.
+    synonyms: [nation, economy, sovereign]
+    aliases:
+      uk: United Kingdom
+      britain: United Kingdom
+      great britain: United Kingdom
+      us: United States
+      usa: United States
+      america: United States
+      turkey: Turkiye
+      russia: Russian Federation
+      south korea: Korea, Rep.
+      korea: Korea, Rep.
+      egypt: Egypt, Arab Rep.
+      iran: Iran, Islamic Rep.
+      vietnam: Viet Nam
+      venezuela: Venezuela, RB
+      czech republic: Czechia
+      slovakia: Slovak Republic
+      hong kong: Hong Kong SAR, China
+  region:
+    column: region
+    match: contains
+    description: World Bank region, for example "Europe & Central Asia" or "Sub-Saharan Africa".
+  income_group:
+    column: income_group
+    match: exact
+    description: "World Bank income group: Low income, Lower middle income, Upper middle income or High income."
+    synonyms: [income level]
+  year:
+    column: year
+    match: exact
+    type: int
+    description: Calendar year, 2015-2024.
+
+metrics:
+  gdp_growth:
+    label: Real GDP growth
+    expr: avg(gdp_growth_pct)
+    unit: percent
+    description: Annual percentage change in real GDP (constant prices).
+    synonyms: [growth, economic growth, real growth, gdp growth rate, real gdp growth]
+  inflation:
+    label: Inflation (CPI)
+    expr: avg(inflation_pct)
+    unit: percent
+    description: Annual percentage change in consumer prices.
+    synonyms: [cpi inflation, consumer price inflation, cpi, price growth]
+  government_debt:
+    label: Central government debt
+    expr: avg(govt_debt_pct_gdp)
+    unit: percent of GDP
+    description: Central government debt as a share of GDP.
+    synonyms: [debt to gdp, public debt, sovereign debt, government debt, central government debt]
+    caveats: Central government only, and coverage is patchy (roughly one country-year in five).
+  current_account:
+    label: Current account balance
+    expr: avg(current_account_pct_gdp)
+    unit: percent of GDP
+    description: Current account balance as a share of GDP; negative means a deficit.
+    synonyms: [current account balance, external balance, current account deficit]
+  unemployment:
+    label: Unemployment rate
+    expr: avg(unemployment_pct)
+    unit: percent
+    description: Unemployed share of the labour force (ILO modelled estimate).
+    synonyms: [jobless rate, unemployment rate]
+  gdp:
+    label: GDP (current US$)
+    expr: sum(gdp_usd)
+    unit: usd
+    description: Gross domestic product in current US dollars.
+    synonyms: [nominal gdp, economic output, size of the economy, gdp in dollars]
+  gdp_per_capita:
+    label: GDP per capita (current US$)
+    expr: avg(gdp_per_capita_usd)
+    unit: usd
+    description: GDP per person in current US dollars.
+    synonyms: [income per person, gdp per head, per capita gdp]
+
+examples:
+  - What was Brazil's GDP growth in 2022?
+  - Which upper-middle-income country had the highest inflation in 2023?
+  - How did UK unemployment change between 2019 and 2023?
